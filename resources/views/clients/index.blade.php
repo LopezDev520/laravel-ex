@@ -1,67 +1,57 @@
 @extends('layouts.app')
 
-@section('title', 'Listado de clientes')
+@push('css')
+<link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}">
+@endpush
 
 @section('content')
-    <div class="content-wrapper">
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="my-3 p-4 rounded bg-slate-300 flex justify-between items-center">
-                            <h1 class="font-bold text-lg">Listado de Clientes</h1>
-                            <a href="{{ route('clients.create') }}"
-                                class="p-2.5 border-1 border-blue-400 rounded hover:bg-blue-400 text-blue-950 cursor-pointer flex items-center gap-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                                    <path fill="currentColor"
-                                        d="M18 10h-4V6a2 2 0 0 0-4 0l.071 4H6a2 2 0 0 0 0 4l4.071-.071L10 18a2 2 0 0 0 4 0v-4.071L18 14a2 2 0 0 0 0-4" />
-                                </svg>
-                            </a>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-body">
-                                <table id="example1" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Nombre</th>
-                                            <th>Documento</th>
-                                            <th>Direccion</th>
-                                            <th>Telefono</th>
-                                            <th>Email</th>
-                                            <th>Foto</th>
-                                            <th>Estado</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($clients as $client)
-                                            <tr>
-                                                <td>{{ $client->id }}</td>
-                                                <td>{{ $client->name }}</td>
-                                                <td>{{ $client->document }}</td>
-                                                <td>{{ $client->address }}</td>
-                                                <td>{{ $client->phone }}</td>
-                                                <td>{{ $client->email }}</td>
-                                                <td>{{ $client->photo }}</td>
-                                                <td>{{ $client->status }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+<div class="content-wrapper">
+  <div class="container mt-5">
+    <div class="card">
+      <div class="py-6 px-4  flex justify-between items-center">
+        <h3 class="card-title">Listado de Clientes</h3>
+        <a href="{{ route('clients.create') }}" class="btn btn-success btn-sm">Añadir Cliente</a>
+      </div>
+      <div class="card-body">
+        <table id="clientsTable" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Correo Electrónico</th>
+              <th>Teléfono</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($clients as $client)
+            <tr>
+              <td>{{ $client->id }}</td>
+              <td>{{ $client->name }}</td>
+              <td>{{ $client->email }}</td>
+              <td>{{ $client->phone }}</td>
+              <td>
+                <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-primary btn-sm">Editar</a>
+                <form action="{{ route('clients.destroy', $client->id) }}" method="POST" style="display:inline;">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+  $(document).ready(function() {
+    $('#clientsTable').DataTable();
+  });
+</script>
+@endpush

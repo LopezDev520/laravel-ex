@@ -13,13 +13,17 @@ use Illuminate\Support\Str;
 
 class ProductoController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $products = Product::all();
-        return view("products.index", compact("products"));
+        $mode = "products";
+        $modeEs = "Productos";
+        // return view("products.index", compact("products"));
+        return view("listar", compact("products", "mode", "modeEs"));
     }
 
     /**
@@ -71,16 +75,38 @@ class ProductoController extends Controller
      */
     public function edit(string $id)
     {
-        $producto = Product::find($id);
-        return view("products.edit", compact("product"));
+        $product = Product::find($id);
+        $form = "products";
+        return view("formulario", compact("product", "form"));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProductoRequest $request, string $id)
     {
-        //
+        $producto = Product::find($id);
+
+        $image = $request->file('image');   
+        $slug = Str::slug($request->nombre);
+        if (isset($image)) {
+            $currentDate = Carbon::now()->toDateString();
+            $imagename = $slug . '-' . $currentDate . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
+
+            if (!file_exists('uploads/productos/')) {
+                mkdir('uploads/productos/', 0777, true);
+            }
+
+            $image->move('uploads/productos', $imagename);
+        } else {
+            $imagename = $producto->image;
+        }
+
+        $producto->update(array_merge($request->except("image"), [
+            "image" => $imagename
+        ]));
+
+        return redirect()->route("products.index")->with("successMsg", "El registro se guardó exitosamente");
     }
 
     /**
@@ -102,5 +128,9 @@ class ProductoController extends Controller
         }
     }
 
-    public function cambioestadoproducto() {}
+    public function cambioestadoproducto(Request $request) {
+		$product = Product::find($request->id);
+		$product->status=$request->estado;
+		$product->save();
+    }
 }

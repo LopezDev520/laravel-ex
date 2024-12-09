@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order_details', function (Blueprint $table) {
             $table->id();
             $table->integer("quantity");
-            $table->decimal("subtotal");
+            $table->decimal("subtotal")->nullable();
             $table->string("registered_by");
 
             // Product -> OrderDetail

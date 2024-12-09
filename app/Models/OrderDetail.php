@@ -15,7 +15,8 @@ class OrderDetail extends Model
         "quantity",
         "product_id",
         "order_id",
-        "registered_by"
+        "registered_by",
+        "subtotal"
     ];
 
     protected $guarded = ["id"];

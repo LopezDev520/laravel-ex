@@ -23,7 +23,7 @@ class ProductoRequest extends FormRequest
     {
         if (request()->isMethod('POST')) {
             return [
-                'name' => 'required|unique|regex:/^[\pL\s\-]+$/u',
+                'name' => 'required|unique:products|regex:/^[\pL\s\-]+$/u',
                 'description' => 'nullable',
                 'price' => 'nullable',
                 'stock' => 'required',
@@ -31,9 +31,9 @@ class ProductoRequest extends FormRequest
                 'status' => 'nullable',
                 'registered_by' => 'nullable',
             ];
-        } elseif (request()->isMethod('put')) {
+        } elseif (request()->isMethod('PUT')) {
             return [
-                'name' => 'required|unique|regex:/^[\pL\s\-]+$/u',
+                'name' => 'required|regex:/^[\pL\s\-]+$/u',
                 'description' => 'nullable',
                 'price' => 'nullable',
                 'stock' => 'required',
